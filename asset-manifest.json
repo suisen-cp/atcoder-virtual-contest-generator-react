@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/atcoder-virtual-contest-generator-react/static/css/main.a49bf506.css",
+    "main.js": "/atcoder-virtual-contest-generator-react/static/js/main.a8e92b69.js",
+    "static/js/787.afe6011d.chunk.js": "/atcoder-virtual-contest-generator-react/static/js/787.afe6011d.chunk.js",
+    "index.html": "/atcoder-virtual-contest-generator-react/index.html",
+    "main.a49bf506.css.map": "/atcoder-virtual-contest-generator-react/static/css/main.a49bf506.css.map",
+    "main.a8e92b69.js.map": "/atcoder-virtual-contest-generator-react/static/js/main.a8e92b69.js.map",
+    "787.afe6011d.chunk.js.map": "/atcoder-virtual-contest-generator-react/static/js/787.afe6011d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a49bf506.css",
+    "static/js/main.a8e92b69.js"
+  ]
+}
