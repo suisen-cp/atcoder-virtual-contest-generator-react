@@ -2,16 +2,20 @@ import { Component } from "react";
 import { Problem } from "../common/Problem";
 import Form, { InputData } from "../organisms/Form";
 import ProblemSet from "../molucules/ProblemSet";
-import { ABC, AGC, ARC, ContestInfo, getContestType, OTHER } from "../common/Contest";
+import { ABC, AGC, ARC, OTHER, Contest } from "../common/Contest";
 import { randomChoice } from "../common/utility/RandomChoice";
-import { difficultyToColor, BLACK, colors, ColorMap, Color } from "../common/Colors";
+import { colors, ColorMap, Color } from "../common/Colors";
 import Card from "../atoms/Card";
+import Data from "../common/Data";
+import { ContestProblem } from "../common/ContestProblem";
 
 type States = {
     problems: Array<Problem>
 }
 
 class VirtualContestGenerator extends Component<{}, States> {
+    static promiseData: Promise<Data> = Data.load();
+
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -20,178 +24,79 @@ class VirtualContestGenerator extends Component<{}, States> {
     }
 
     handleInput = (input: InputData) => {
-        const strMinDate = input.dateMin;
-        const strMaxDate = input.dateMax;
-        const minDate = new Date(strMinDate);
-        const maxDate = new Date(strMaxDate);
+        VirtualContestGenerator.promiseData.then((data) => {
+            const strMinDate = input.dateMin;
+            const strMaxDate = input.dateMax;
+            const minDate = new Date(strMinDate);
+            const maxDate = new Date(strMaxDate);
 
-        const includeABC = input.srcs.abc;
-        const includeARC = input.srcs.arc;
-        const includeAGC = input.srcs.agc;
-        const includeOther = input.srcs.other;
+            const includeABC = input.srcs.abc;
+            const includeARC = input.srcs.arc;
+            const includeAGC = input.srcs.agc;
+            const includeOther = input.srcs.other;
 
-        const selectNum = input.nums;
+            const selectNum = input.nums;
 
-        let problem_set: Array<Problem> = [];
+            let problem_set: Array<Problem> = [];
 
-        let self = this;
+            const filteredContestList = data.getContests().filter((contest: Contest) => {
+                if (strMinDate && contest.startDate < minDate) return false;
+                if (strMaxDate && contest.startDate > maxDate) return false;
 
-        const promiseLoadContestInfo = new Promise<Set<string> | undefined>(function (resolve, _) {
-            const contestInfoURL = "https://kenkoooo.com/atcoder/resources/contests.json";
-            const contestInfoRequest = new XMLHttpRequest();
-            contestInfoRequest.open('GET', contestInfoURL);
-            contestInfoRequest.responseType = 'json';
-            contestInfoRequest.send();
+                if (contest.type === ABC) {
+                    return includeABC;
+                } else if (contest.type === ARC) {
+                    return includeARC;
+                } else if (contest.type === AGC) {
+                    return includeAGC;
+                } else if (contest.type === OTHER) {
+                    return includeOther;
+                }
+                return false;
+            });
 
-            contestInfoRequest.onload = () => {
-                const contest_list: Array<string> = contestInfoRequest.response
-                    .filter((contest: ContestInfo) => {
-                        const startDate: Date = new Date(contest["start_epoch_second"] * 1000);
+            const filteredContestIDs = new Map(filteredContestList.map((contest: Contest) => {
+                return [contest.id, contest.title];
+            }));
 
-                        if (strMinDate && startDate < minDate) return false;
-                        if (strMaxDate && startDate > maxDate) return false;
+            const filteredContestProblemList = data.getContestProblems().filter((contestProblem: ContestProblem) => {
+                return filteredContestIDs.has(contestProblem.contestID);
+            });
 
-                        const contest_type = getContestType(contest);
+            let problemsGroupByColor = {} as ColorMap<Array<ContestProblem>>;
+            colors.forEach((color: Color) => problemsGroupByColor[color] = []);
 
-                        if (contest_type === ABC) {
-                            return includeABC;
-                        } else if (contest_type === ARC) {
-                            return includeARC;
-                        } else if (contest_type === AGC) {
-                            return includeAGC;
-                        } else if (contest_type === OTHER) {
-                            return includeOther;
-                        }
+            filteredContestProblemList.forEach((contestProblem: ContestProblem) => {
+                const color: Color = data.getDifficultyCategory(contestProblem.problemID);
+                problemsGroupByColor[color].push(contestProblem)
+            });
 
-                        alert("Somethig wrong.")
-                        return false;
-                    })
-                    .map(function (contest: ContestInfo) {
-                        return contest["id"];
-                    });
-
-                const contests = new Set(contest_list);
-
-                resolve(contests);
-            };
-            contestInfoRequest.onerror = function () {
-                alert('Network Error.');
-                resolve(undefined);
-            };
-        });
-
-        promiseLoadContestInfo.then(function (contests?: Set<string>) {
-            const promiseLoadContestProblemInfo = new Promise<Set<string> | undefined>(function (resolve, _) {
-                if (contests === undefined) {
-                    resolve(undefined);
+            colors.forEach((color) => {
+                if (problemsGroupByColor[color].length < selectNum[color]) {
+                    alert(`There are not enough problems. Category: ${color}`);
                     return;
                 }
 
-                type ContestProblemInfo = {
-                    contest_id: string,
-                    problem_id: string,
-                    problem_index: string
-                }
-
-                const contestProblemInfo = "https://kenkoooo.com/atcoder/resources/contest-problem.json";
-                const contestProblemInfoRequest = new XMLHttpRequest();
-                contestProblemInfoRequest.open('GET', contestProblemInfo);
-                contestProblemInfoRequest.responseType = 'json';
-                contestProblemInfoRequest.send();
-
-                contestProblemInfoRequest.onload = function () {
-                    const problem_list: Array<string> = contestProblemInfoRequest.response
-                        .filter(function (contestProblem: ContestProblemInfo) {
-                            return contests.has(contestProblem["contest_id"]);
-                        })
-                        .map(function (contestProblem: ContestProblemInfo) {
-                            return contestProblem["problem_id"];
-                        });
-
-                    const problems = new Set(problem_list);
-
-                    resolve(problems);
-                };
-                contestProblemInfoRequest.onerror = function () {
-                    alert('Network Error.');
-
-                    resolve(undefined);
-                };
+                randomChoice(problemsGroupByColor[color], selectNum[color]).forEach((problem: ContestProblem) => {
+                    problem_set.push({
+                        problemID: problem.problemID,
+                        contestID: problem.contestID,
+                        problemTitle: data.getTitle(problem.problemID),
+                        contestTitle: filteredContestIDs.get(problem.contestID) as string,
+                        problemIndex: problem.problemIndex,
+                        color: color,
+                    })
+                })
             });
 
-            promiseLoadContestProblemInfo.then(function (problems?: Set<string>) {
-                const promiseLoadProblemModel = new Promise<ColorMap<Array<string>> | undefined>(function (resolve, _) {
-                    if (problems === undefined) {
-                        resolve(undefined);
-                        return;
-                    }
-
-                    type ProblemModel = {
-                        slope?: number,
-                        intercept?: number,
-                        variance?: number,
-                        difficulty?: number,
-                        discrimination?: number,
-                        irt_loglikelihood?: number,
-                        irt_users?: number,
-                        is_experimental?: boolean
-                    }
-                    type ProblemModels = {
-                        [s in string]: ProblemModel
-                    }
-
-                    const difficultyInfoURL = "https://kenkoooo.com/atcoder/resources/problem-models.json";
-                    const difficultyInfoRequest = new XMLHttpRequest();
-                    difficultyInfoRequest.open('GET', difficultyInfoURL);
-                    difficultyInfoRequest.responseType = 'json';
-                    difficultyInfoRequest.send();
-
-                    difficultyInfoRequest.onload = function () {
-                        let problemsGroupByColor = {} as ColorMap<Array<string>>;
-                        colors.forEach((color: Color) => problemsGroupByColor[color] = []);
-
-                        const difficultyInfo: ProblemModels = difficultyInfoRequest.response;
-
-                        problems.forEach((problem: string) => {
-                            const color = problem in difficultyInfo ? difficultyToColor(difficultyInfo[problem]["difficulty"]) : BLACK;
-                            problemsGroupByColor[color].push(problem)
-                        });
-
-                        resolve(problemsGroupByColor);
-                    };
-                    difficultyInfoRequest.onerror = function () {
-                        alert('Network Error.');
-                        resolve(undefined);
-                    };
-                });
-                promiseLoadProblemModel.then(function (problemsGroupByColor?: ColorMap<Array<string>>) {
-                    if (problemsGroupByColor === undefined) {
-                        return;
-                    }
-
-                    colors.forEach((color) => {
-                        if (problemsGroupByColor[color].length < selectNum[color]) {
-                            alert(`There are not enough problems. Category: ${color}`);
-                            return;
-                        }
-
-                        randomChoice(problemsGroupByColor[color], selectNum[color]).forEach((id: string) => {
-                            problem_set.push({
-                                id: id,
-                                color: color,
-                            })
-                        })
-                    });
-
-                    self.setState({ problems: problem_set });
-                });
-            });
+            this.setState({ problems: problem_set });
         });
     }
 
     render() {
         return (
             <div>
+                <div><h1>AtCoder Virtual Contest Generator</h1></div>
                 <div>
                     <Card title="設定">
                         <Form handleInput={this.handleInput} />

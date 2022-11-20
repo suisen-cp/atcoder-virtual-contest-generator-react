@@ -44,7 +44,7 @@ export function updateColorMap<T>(mp: Readonly<ColorMap<T>>, color: Color, new_v
 }
 
 export const colorToDifficultyDescription : ColorMap<string> = {
-    black: "Unrated",
+    black: "Unknown",
     gray: "0~400",
     brown: "400~800",
     green: "800~1200",

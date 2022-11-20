@@ -16,16 +16,16 @@ class ProblemNumberInputs extends Component<Props> {
     render() {
         return (
             <div className="table-responsive">
-                <table className="table">
+                <table className="table" style={{ tableLayout: "fixed" }}>
                     <thead>
                         <tr>
-                            <td className="table-entry">difficulty</td>
+                            <td className="table-entry" style={{ width: "4em" }}>難易度</td>
                             {
                                 Object.entries(colorToDifficultyDescription).map(
                                     ([color, description]) => {
                                         return (
                                             <th scope="col" className="table-entry" key={color}>
-                                                <DifficultyCircle color={color as Color}/> {description}
+                                                <DifficultyCircle color={color as Color}/><br/>{description}
                                             </th>
                                         );
                                     }
