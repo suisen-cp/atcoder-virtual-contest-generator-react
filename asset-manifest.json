@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/atcoder-virtual-contest-generator-react/static/css/main.a49bf506.css",
-    "main.js": "/atcoder-virtual-contest-generator-react/static/js/main.48c0dddf.js",
+    "main.css": "/atcoder-virtual-contest-generator-react/static/css/main.67dc10e0.css",
+    "main.js": "/atcoder-virtual-contest-generator-react/static/js/main.659344c5.js",
     "static/js/787.afe6011d.chunk.js": "/atcoder-virtual-contest-generator-react/static/js/787.afe6011d.chunk.js",
     "index.html": "/atcoder-virtual-contest-generator-react/index.html",
-    "main.a49bf506.css.map": "/atcoder-virtual-contest-generator-react/static/css/main.a49bf506.css.map",
-    "main.48c0dddf.js.map": "/atcoder-virtual-contest-generator-react/static/js/main.48c0dddf.js.map",
+    "main.67dc10e0.css.map": "/atcoder-virtual-contest-generator-react/static/css/main.67dc10e0.css.map",
+    "main.659344c5.js.map": "/atcoder-virtual-contest-generator-react/static/js/main.659344c5.js.map",
     "787.afe6011d.chunk.js.map": "/atcoder-virtual-contest-generator-react/static/js/787.afe6011d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a49bf506.css",
-    "static/js/main.48c0dddf.js"
+    "static/css/main.67dc10e0.css",
+    "static/js/main.659344c5.js"
   ]
 }
