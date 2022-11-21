@@ -7,16 +7,20 @@ type Props = {
 }
 
 class DateInput extends Component<Props, {}> {
-    handleChange : React.ChangeEventHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange: React.ChangeEventHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.props.onDateChange(event.target.value);
     };
 
     render() {
         return (
-            <label className="form-label">
-                {this.props.label}
-                <input type="date" className="form-control" value={this.props.value} onChange={this.handleChange} />
-            </label>
+            <div className="row mb-3">
+                <label className="col-sm-2 col-form-label">
+                    {this.props.label}
+                </label>
+                <div className="col-sm-10">
+                    <input type="date" className="form-control" value={this.props.value} onChange={this.handleChange} />
+                </div>
+            </div>
         );
     }
 };

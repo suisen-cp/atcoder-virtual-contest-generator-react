@@ -44,18 +44,18 @@ export function updateColorMap<T>(mp: Readonly<ColorMap<T>>, color: Color, new_v
 }
 
 export const colorToDifficultyDescription : ColorMap<string> = {
-    black: "Unknown",
-    gray: "0~400",
-    brown: "400~800",
-    green: "800~1200",
-    cyan: "1200~1600",
-    blue: "1600~2000",
-    yellow: "2000~2400",
-    orange: "2400~2800",
-    red: "2800~3200",
-    bronze: "3200~3600",
-    silver: "3600~4000",
-    gold: "4000~inf",
+    black: "?",
+    gray: "0 ~ 400",
+    brown: "400 ~ 800",
+    green: "800 ~ 1200",
+    cyan: "1200 ~ 1600",
+    blue: "1600 ~ 2000",
+    yellow: "2000 ~ 2400",
+    orange: "2400 ~ 2800",
+    red: "2800 ~ 3200",
+    bronze: "3200 ~ 3600",
+    silver: "3600 ~ 4000",
+    gold: "4000 ~ inf",
 };
 
 export function difficultyToColor(difficulty?: number) {

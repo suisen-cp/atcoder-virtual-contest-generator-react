@@ -16,8 +16,8 @@ class ProblemNumberInputs extends Component<Props> {
     render() {
         return (
             <div className="table-responsive">
-                <table className="table" style={{ tableLayout: "fixed" }}>
-                    <thead>
+                <table className="table">
+                    <thead className="table-light">
                         <tr>
                             <td className="table-entry" style={{ width: "4em" }}>難易度</td>
                             {

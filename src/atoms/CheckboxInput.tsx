@@ -9,8 +9,8 @@ type Props = {
 class CheckboxInput extends Component<Props> {
     render() {
         return (
-            <label>
-                <input type="checkbox" checked={this.props.value} onChange={this.props.onToggle}/>&nbsp;
+            <label className="form-check-label form-check">
+                <input type="checkbox" className="form-check-input" checked={this.props.value} onChange={this.props.onToggle}/>&nbsp;
                 {this.props.label}
             </label>
         )

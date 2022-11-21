@@ -7,7 +7,7 @@ type Props = {
 class ResetButton extends Component<Props> {
     render() {
         return (
-            <button className="btn btn-danger" onClick={this.props.onClick} type="reset">reset</button>
+            <button className="btn-sm btn btn-outline-danger" style={{ height: "80%" }} onClick={this.props.onClick} type="reset">reset</button>
         )
     }
 }

@@ -70,18 +70,24 @@ class Form extends Component<Props, State> {
         return (
             <div>
                 <h4>Difficulty <ResetButton onClick={this.handleResetNumber}/> </h4>
+                <div>
                 <ProblemNumberInputs nums={this.state.nums} onNumberChange={this.handleNumberChange} />
+                </div>
 
                 <h4>出典 <ResetButton onClick={this.handleResetSources}/> </h4>
+                <div>
                 <SourceSelectorInputs srcs={this.state.srcs} onToggle={this.handleToggleSource}/>
+                </div>
 
                 <h4>コンテスト開始時刻 <ResetButton onClick={this.handleResetDate}/> </h4>
+                <div>
                 <DateInputs
                     dateMin={this.state.dateMin}
                     dateMax={this.state.dateMax}
                     onMinDateChange={this.handleMinDateChange}
                     onMaxDateChange={this.handleMaxDateChange}
                 />
+                </div>
                 <button type="button" className="btn btn-primary w-100" onClick={this.handleClick}>
                     Generate Virtual Contest
                 </button>
